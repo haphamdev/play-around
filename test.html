@@ -1,0 +1,72 @@
+<html>
+
+<head>
+  <title>Test</title>
+</head>
+
+<body>
+  <h1>A test page created by Ha Pham</h1>
+  <p>Enter the PIN to start sharing your screen. Please ask Personio support agent for the PIN.</p>
+
+  <input id="input_cobrowse_pin" name="cobrowse_pin" type="text" />
+  <button id='btn_start' onclick="startClicked()">Start</button>
+  <p id='para_result' />
+
+  <!-- Preloading is an optional speedup -->
+  <link href="https://cobrowse.screenmeet.com/CobrowseCore.js" rel="preload" as="script">
+
+  <!-- Required -->
+  <script type="text/javascript" async="true">
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "https://cobrowse.screenmeet.com/CobrowseBootstrap.js";
+    document.body.appendChild(script);
+
+    script.addEventListener("load", () => {
+      const defaultLocaeData = {END_CB_BUTTON: 'Stop sharing', };
+
+      window.Cobrowse.modal.addL18nLocale(["en", "en-us"], defaultLocaleData);
+    });
+
+    window.addEventListener("StartCobrowseEvent", function (event) {
+      console.log("ScreenMeet Cobrowse session has started. ID: ", event.detail.id)
+      var startBtn = document.getElementById('btn_start');
+      startBtn.style.visibility = 'hidden';
+
+      var paraResult = document.getElementById('para_result');
+      paraResult.innerHTML = "Started Cobrowse session successfully. Enjoy it! :)";
+    })
+
+    window.addEventListener("StopCobrowseEvent", function (event) {
+      console.log("ScreenMeet Cobrowse session has end. ID: ", event.detail.id)
+      var startBtn = document.getElementById('btn_start');
+      startBtn.style.visibility = 'visible';
+
+      var paraResult = document.getElementById('para_result');
+      paraResult.innerHTML = "Cobrowse session has ended.";
+    })
+  </script>
+
+  <script type="text/javascript">
+    function startClicked() {
+      var paraResult = document.getElementById('para_result');
+      paraResult.innerHTML = "Please wait...";
+
+      var pin = document.getElementById('input_cobrowse_pin').value;
+      window.Cobrowse.modal.startSession(pin)
+        .then(value => {
+          if (value) {
+            console.log("Started session :)))");
+          } else {
+            console.log("Failed to started session :((. Please add code here to handle failure.");
+
+            var paraResult = document.getElementById('para_result');
+            paraResult.innerHTML = "Failed to start Cobrowse session. Please make sure the PIN is correct.";
+          }
+        })
+    }
+  </script>
+
+</body>
+
+</html>
